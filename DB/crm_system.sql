@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 29, 2023 at 01:19 PM
+-- Generation Time: Oct 03, 2023 at 01:50 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.1.12
 
@@ -129,7 +129,14 @@ INSERT INTO `paid_amount` (`p_id`, `p_u_id`, `amount`, `discount_amount`, `date`
 (2, '1', '4500', 0, '2023-09-21', '4', '', NULL, NULL),
 (3, '1', '4500', 0, '2023-09-21', '4', '', NULL, NULL),
 (4, '1', '4500', 0, '2023-09-21', '4', '', NULL, NULL),
-(5, '1', '500', 0, '2023-09-21', '4', '', NULL, NULL);
+(5, '1', '500', 0, '2023-09-21', '4', '', NULL, NULL),
+(6, '3', '4000', 1000, '2023-10-02', '4', 'cash', NULL, NULL),
+(7, '2', '57000', 0, '2023-10-02', '4', '', NULL, NULL),
+(10, '2', '700', 50, '2023-10-02', '4', '', NULL, NULL),
+(11, '8', '32475', 1000, '2023-10-02', '4', '', NULL, NULL),
+(12, '7', '35000', 675, '2023-10-02', '1', 'G-pay', NULL, NULL),
+(13, '5', '5000', 1000, '2023-10-02', '4', '', NULL, NULL),
+(14, '5', '50000', 2000, '2023-10-02', '4', '', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -159,28 +166,28 @@ INSERT INTO `product_order` (`bill_no`, `o_id`, `cat_id`, `sub_cat_name`, `quant
 (1, 1, 1, 'B1-K1', 20, 225, 1, 1, NULL, 1, 0),
 (2, 2, 1, 'B1-K1', 150, 225, 2, 1, NULL, 1, 0),
 (3, 3, 1, 'B1-K1', 5, 1000, 3, 1, NULL, 0, 0),
-(4, 4, 1, 'B1-K1', 8, 1000, 2, 0, NULL, 0, 1),
-(5, 5, 1, 'B1-K1', 5, 225, 4, 0, NULL, 0, 0),
-(5, 6, 4, 'B1-K3', 2, 500, 4, 0, NULL, 0, 0),
-(5, 7, 18, 'B1-K3', 1, 600, 4, 0, NULL, 0, 0),
-(5, 8, 22, 'B1-K1', 4, 800, 4, 0, NULL, 0, 0),
-(5, 9, 31, 'B1-K3', 5, 800, 4, 0, NULL, 0, 0),
-(6, 10, 1, 'B1-K1', 67, 225, 5, 0, NULL, 0, 0),
+(4, 4, 1, 'B1-K1', 8, 1000, 2, 1, NULL, 0, 1),
+(5, 5, 1, 'B1-K1', 5, 225, 4, 1, NULL, 0, 1),
+(5, 6, 4, 'B1-K3', 2, 500, 4, 1, NULL, 0, 0),
+(5, 7, 18, 'B1-K3', 1, 600, 4, 1, NULL, 0, 1),
+(5, 8, 22, 'B1-K1', 4, 800, 4, 1, NULL, 0, 0),
+(5, 9, 31, 'B1-K3', 5, 800, 4, 1, NULL, 0, 0),
+(6, 10, 1, 'B1-K1', 67, 225, 5, 0, NULL, 0, 1),
 (6, 11, 1, 'B1-K2', 23, 300, 5, 0, NULL, 0, 0),
 (6, 12, 1, 'B1-K3', 45, 300, 5, 0, NULL, 0, 0),
-(6, 13, 1, 'B1-K4', 100, 300, 5, 0, NULL, 0, 0),
+(6, 13, 1, 'B1-K4', 100, 300, 5, 0, NULL, 0, 1),
 (6, 14, 7, 'B1-K1', 0, 300, 5, 0, NULL, 0, 0),
 (6, 15, 8, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
 (6, 16, 9, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
 (6, 17, 10, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
-(6, 18, 11, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
-(6, 19, 12, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
+(6, 18, 11, 'B1-K1', 0, 500, 5, 0, NULL, 0, 1),
+(6, 19, 12, 'B1-K1', 0, 500, 5, 0, NULL, 0, 1),
 (6, 20, 13, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
 (6, 21, 14, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
 (6, 22, 16, 'B1-K1', 0, 500, 5, 0, NULL, 0, 0),
 (6, 23, 17, 'B1-K1', 0, 600, 5, 0, NULL, 0, 0),
 (6, 24, 19, 'B1-K1', 0, 600, 5, 0, NULL, 0, 0),
-(7, 25, 1, 'B1-K1', 0, 225, 5, 0, NULL, 0, 0),
+(7, 25, 1, 'B1-K1', 0, 225, 5, 0, NULL, 0, 1),
 (7, 26, 2, 'B1-K1', 0, 300, 5, 0, NULL, 0, 0),
 (7, 27, 3, 'B1-K1', 0, 300, 5, 0, NULL, 0, 0),
 (7, 28, 4, 'B1-K1', 0, 300, 5, 0, NULL, 0, 0),
@@ -237,6 +244,20 @@ CREATE TABLE `quotation_order` (
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `quotation_order`
+--
+
+INSERT INTO `quotation_order` (`bill_no`, `q_id`, `cat_id`, `sub_cat_name`, `quantity`, `price`, `user_id`) VALUES
+(1, 1, 1, 'B1-K1', 7, 225, 1),
+(1, 2, 2, 'B1-K2', 8, 400, 1),
+(1, 3, 4, 'B1-K3', 10, 500, 1),
+(1, 4, 7, 'B1-K1', 10, 300, 1),
+(1, 5, 7, 'B1-K2', 10, 400, 1),
+(1, 6, 7, 'B1-K4', 18, 600, 1),
+(1, 7, 8, 'B1-K4', 14, 800, 1),
+(1, 8, 11, 'B1-K3', 13, 700, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -250,6 +271,13 @@ CREATE TABLE `quotation_user` (
   `address` text DEFAULT NULL,
   `b_date` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `quotation_user`
+--
+
+INSERT INTO `quotation_user` (`u_id`, `name`, `contact_no`, `address`, `b_date`) VALUES
+(1, 'Ravi', 1234567899, 'xyz', '2023-10-03');
 
 -- --------------------------------------------------------
 
@@ -643,7 +671,7 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `paid_amount`
 --
 ALTER TABLE `paid_amount`
-  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `p_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `product_order`
@@ -655,13 +683,13 @@ ALTER TABLE `product_order`
 -- AUTO_INCREMENT for table `quotation_order`
 --
 ALTER TABLE `quotation_order`
-  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `q_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `quotation_user`
 --
 ALTER TABLE `quotation_user`
-  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `u_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `stock`
