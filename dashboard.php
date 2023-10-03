@@ -122,7 +122,7 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
         </div>
       </div><!-- /.container-fluid -->
     </section>
-    <?php }else{ ?>
+    <?php } if($_SESSION['role']==1 || $_SESSION['role']!=1) { ?>
 
 <section class="content">
       <div class="container-fluid">
@@ -189,7 +189,7 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                      </tr>
                   </thead>
                   <tbody class="text-left">
-                    <?php $id=1; $index=0; while($cate_rows = mysqli_fetch_assoc($cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
+                    <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
                      <tr>
                         <td><b><?php echo $id; ?></b></td>
                         <td><b><?php echo $cate_rows['cat_name']; ?></b></td>
@@ -226,14 +226,14 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                                       <input type="hidden" name="category[]" value="" class="category_name">
                                       <input type="hidden" name="price[]" value="" class="category_price">
 
-                                      <td width="20" align="center"><input type="checkbox" <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input"></td>
+                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input" <?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> checked  <?php } } ?>></td>
 
                                       <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
                                       <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
 
                                     </tr>
                                     <tr>
-                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="0" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" disabled onchange="calculation(<?php echo $total_category; ?>)"></td>
+                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "disabled"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)"></td>
                                     </tr>
                                   </table>
                                 </td>

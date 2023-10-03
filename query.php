@@ -431,3 +431,57 @@ if(isset($_GET['order_bill']))
 		}
 
 	}
+
+
+
+	/* Edit Order */
+
+
+	if(isset($_GET['edit_bill_no']))
+	{
+		$e_bill_no = $_GET['edit_bill_no'];
+		$edit_bill_query = "select * from product_order where bill_no=$e_bill_no";
+		$edit_bill_data = mysqli_query($con,$edit_bill_query);
+
+		$m_cat_id = "";
+		$sub_cat_name="";
+		$e_quntity="";
+
+		while($edit_bill_rows = mysqli_fetch_assoc($edit_bill_data))
+		{
+			if($m_cat_id=="")
+			{
+				$m_cat_id = $edit_bill_rows['cat_id'];
+			}
+			else
+			{
+				$m_cat_id = $m_cat_id.",".$edit_bill_rows['cat_id'];
+			}
+
+			if($sub_cat_name=="")
+			{
+				$sub_cat_name = $edit_bill_rows['sub_cat_name'];
+			}
+			else
+			{
+				$sub_cat_name = $sub_cat_name.",".$edit_bill_rows['sub_cat_name'];
+			}
+
+			if($e_quntity=="")
+			{
+				$e_quntity = $edit_bill_rows['quantity'];
+			}
+			else
+			{
+				$e_quntity = $e_quntity.",".$edit_bill_rows['quantity'];
+			}
+
+		}
+
+		$e_cat_id = explode(",",$m_cat_id);
+		$e_sub_cat_name = explode(",",$sub_cat_name);
+		$e_quntity = explode(",",$e_quntity);
+	}
+
+
+	/* End Edit */
