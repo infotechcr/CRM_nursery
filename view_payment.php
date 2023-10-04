@@ -1,5 +1,16 @@
 <?php include_once 'header.php'; include_once 'query.php'; ?>
 
+    <?php 
+
+          if(isset($_GET['billid']))
+          {
+                $bid = $_GET['billid'];
+                $status_update = "update `paid_amount` set `status`='1' where `p_id`=".$bid;
+                mysqli_query($con,$status_update);
+                header("location:view_payment.php");
+          }
+     ?>
+
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <br>
@@ -24,6 +35,7 @@
                       <th>Paid Amount | Discount Amount</th>
                       <th>Bill Date</th>
                       <th>Action</th>
+                      <th>Delete</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -38,7 +50,7 @@
                   			<td><?php echo $pay_data["date"]; ?></td>
                   			<td><a href="print_cash_receipt.php?p_id=<?php echo $pay_data['p_id'] ?>&u_id=<?php echo $pay_data['p_u_id']; ?>">Print slip</a></td>
 
-
+                          <td><a href="view_payment.php?billid=<?php echo $pay_data['p_id']?>">Delete</a></td>
                   		</tr>
 
                   	<?php $id++; } ?>

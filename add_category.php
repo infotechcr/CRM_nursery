@@ -1,5 +1,24 @@
 <?php include_once 'header.php'; include_once 'query.php'; ?>
 
+
+<?php 
+
+    if(isset($_GET['id']))
+    {
+          $id = $_GET['id'];
+          $subcat_data = "delete from sub_category where `cat_id` = ".$id;
+          mysqli_query($con,$subcat_data);
+          $cat_data = "delete from category where `cat_id`=".$id;
+          mysqli_query($con,$cat_data);
+          $stock_data = "delete from stock where `cat_id`=".$id;
+          mysqli_query($con,$stock_data);
+          header("location:add_category.php");
+    }
+
+
+
+ ?>
+
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -69,8 +88,8 @@
                     <tr>
                       <td><?php echo $cat_row['cat_id']; ?></td>
                       <td><?php echo $cat_row['cat_name']; ?></td>
-                      <td><a href="#">Edit</a></td>
-                      <td><a href="#">update</a></td>
+                      <td><a href="add_category.php?edit_id=<?php echo $cat_row['cat_id']; ?>">Edit</a></td>
+                      <td><a href="add_category.php?id=<?php echo $cat_row['cat_id']; ?>">Delete</a></td>
                     </tr>
                   <?php } ?>
                   </tbody>
