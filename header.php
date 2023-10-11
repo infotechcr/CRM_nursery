@@ -281,7 +281,7 @@ if(!isset($_SESSION["Login_id"]))
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="quotation.php" class="nav-link">
+                <a href="add_replace.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Replace Product</p>
                 </a>
