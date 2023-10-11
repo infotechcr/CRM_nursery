@@ -3,7 +3,7 @@
 $today_date = date("Y-m-d");
 
 $today_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id GROUP BY product_order.bill_no";
-$total_order = mysqli_query($con,$selected_order_query);
+$total_order = mysqli_query($con,$today_order_query);
 
 $today_collection_query = "SELECT * FROM `paid_amount` WHERE date = '$today_date'";
 $today_payment_data = mysqli_query($con,$today_collection_query);
@@ -28,7 +28,17 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
     }
 }
 
+if (isset($_SESSION['e_cat_id'])) {
+  
 
+    $e_cat_id =$_SESSION['e_cat_id'];
+    $e_sub_cat_name = $_SESSION['e_sub_cat_name'] ;
+    $e_quntity = $_SESSION['e_quntity'];
+    $u_id = $_SESSION['u_id'];
+    $e_sub_cat_id = $_SESSION['e_sub_cat_id']; 
+    $user_data = $_SESSION['user_data']; 
+
+}
 
   ?>
 
@@ -124,7 +134,7 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
     </section>
     <?php } if($_SESSION['role']==1 || $_SESSION['role']!=1) { ?>
 
-<section class="content">
+  <section class="content">
       <div class="container-fluid">
         <div class="row pt-4">
           <!-- left column -->
@@ -142,25 +152,25 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Name: <a href=""></a></label>
-                                    <input type="text" class="form-control" name="p_name" placeholder="Full name" required id="c_name">
+                                    <input type="text" class="form-control" value="<?php if(isset($_SESSION['e_cat_id'])) { echo $user_data['name']; } ?>" name="p_name" placeholder="Full name" required id="c_name">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Contact_no:</label>
-                                    <input type="text" class="form-control" name="p_contact_no" id="Contact_no" max="10" placeholder="Contact No" required>
+                                    <input type="text" class="form-control" value="<?php if(isset($_SESSION['e_cat_id'])) { echo $user_data['contact_no']; } ?>" name="p_contact_no" id="Contact_no" max="10" placeholder="Contact No" required>
                             </div>
                         </div>
                            <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Address:</label>
-                                    <input type="text" class="form-control" name="p_address" placeholder="Addresss" required id="c_address">
+                                    <input type="text" class="form-control" value="<?php if(isset($_SESSION['e_cat_id'])) { echo $user_data['address']; } ?>" name="p_address" placeholder="Addresss" required id="c_address">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Bill Date:</label>
-                                    <input type="date" class="form-control" name="p_date" required id="todayDate">
+                                    <input type="date" class="form-control" value="<?php if(isset($_SESSION['e_cat_id'])) { echo $user_data['b_date']; } ?>" name="p_date" required id="todayDate">
                             </div>
                         </div>
                     </div>
@@ -189,7 +199,7 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                      </tr>
                   </thead>
                   <tbody class="text-left">
-                    <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
+                    <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($sel_cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
                      <tr>
                         <td><b><?php echo $id; ?></b></td>
                         <td><b><?php echo $cate_rows['cat_name']; ?></b></td>
@@ -218,22 +228,47 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                                   }else{
                                     $status = "";
                                   }
+
+                               // print_r($sub_cat_row); 
+                               // print_r($e_cat_id);
+                               // print_r($e_sub_cat_id); die();
+
                               ?>
 
                                 <td style="<?php echo @$style; ?> ">
                                   <table width="100%">
                                     <tr>
-                                      <input type="hidden" name="category[]" value="" class="category_name">
+                                      <input type="hidden" name="category[]" value="<?php 
+                                      if(isset($_SESSION['e_cat_id'])) 
+                                      { 
+                                          if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id)))
+                                          { 
+                                            echo $e_cat_id[$q_index]; 
+                                            
+                                          }
+                                          else 
+                                          { 
+                                            echo "0"; 
+                                          } 
+                                        } 
+                                        else 
+                                        { 
+                                            echo "0"; 
+                                          }  
+                                        ?> " class="category_name">
                                       <input type="hidden" name="price[]" value="" class="category_price">
 
-                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input" <?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> checked  <?php } } ?>></td>
+                                      <?php if(isset($_SESSION['e_cat_id'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> <input type="hidden" name="bill_no_id[]" value="<?php echo $u_id[$q_index] ?>">  <?php } } ?>
+
+                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input" <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
 
                                       <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
                                       <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
 
                                     </tr>
                                     <tr>
-                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "disabled"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_GET['edit_bill_no'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)"></td>
+
+                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)"></td>
                                     </tr>
                                   </table>
                                 </td>
@@ -246,10 +281,10 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
                         <table width="100%" class="border-0">
                           <tr>
                             <td align="left">
-                              <input type="text" class="form-control" name="total" id="total" readonly placeholder="Total Amount" required>
+                              <input type="text" class="form-control" name="total" value="<?php echo @$e_total_payment; ?>" id="total" readonly placeholder="Total Amount" required>
                             </td>
                             <td align="right">
-                              <input type="submit" class="btn btn-primary form-control" name="place_order" id="submit_btn" value="Place Order" disabled>
+                              <input type="submit" class="btn btn-primary form-control" name="place_order" id="submit_btn" value="Place Order" <?php if(!isset($_SESSION['e_cat_id'])) { ?> disabled <?php } ?> >
                             </td>
                           </tr>
                         </table>
@@ -311,15 +346,19 @@ while($payment_row = mysqli_fetch_assoc($today_payment_data))
     function calculation(total_category) {
       
       var total=0;
+      var cat_1,price_1;
 
       for (var i=0;i<total_category;i++) {
 
-        var cat_1 = parseInt(document.getElementsByClassName('product_quantity')[i].value);
-        var price_1 = parseInt(document.getElementsByClassName('product_quantity')[i].getAttribute('product_price'));
+          cat_1 = parseInt(document.getElementsByClassName('product_quantity')[i].value);
+          price_1 = parseInt(document.getElementsByClassName('product_quantity')[i].getAttribute('product_price'));
 
-         total = total + cat_1*price_1;
-          
+          total = total + cat_1*price_1; 
+
       }
+
+ 
+         
 
       document.getElementById('total').value = total;
     }

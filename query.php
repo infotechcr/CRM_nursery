@@ -2,6 +2,8 @@
 
 include_once 'db.php';
 
+$actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; 
+
 if(!isset($_SESSION['Login_id']))
 {
     header('location:index.php');
@@ -84,8 +86,8 @@ if(isset($_POST['cat_id']))
 /* Dashboard Data */
 
 $category_select = "select * from category";
-$cat_data = mysqli_query($con,$category_select);
-$total_category = mysqli_num_rows($cat_data) * 4;
+$sel_cat_data = mysqli_query($con,$category_select);
+$total_category = mysqli_num_rows($sel_cat_data) * 4;
 
 /* select Stock */
 
@@ -138,6 +140,26 @@ if (isset($_POST['place_order'])) {
 	$cat_data = $_POST['category'];
 	$cat_price = $_POST['price'];
 
+	if(isset($_SESSION['e_cat_id']))
+	{
+		$u_id_array = array();
+
+		$update_id = $_POST['bill_no_id'];
+
+
+	$update_id_index=0;  foreach ($update_id as $key => $value) {
+
+		if($value!="")
+		{
+			$u_id_array[$update_id_index] = $value;
+			$update_id_index++;
+		}
+	}
+	
+
+
+	}
+
 
 	$name = ucwords($_POST['p_name']);
 	$contact_no = $_POST['p_contact_no'];
@@ -154,14 +176,25 @@ if (isset($_POST['place_order'])) {
 	$sql_select_bill_no_query = "SELECT * FROM `product_order` ORDER BY `product_order`.`bill_no` DESC limit 0,1";
 	$sql_select_bill = mysqli_query($con,$sql_select_bill_no_query);
 	$fatch_bill_no = mysqli_fetch_assoc($sql_select_bill);
+	$count_bill = mysqli_num_rows($sql_select_bill);
 
-	$bill_no = $fatch_bill_no['bill_no'];
+	if($count_bill>0)
+	{
 
-	$bill_no++;
+		$bill_no = $fatch_bill_no['bill_no'];
+
+		$bill_no++;
+	}
+	else
+	{
+			$bill_no=1;
+	}
 
 	$cat_index=0;  foreach ($cat_data as $key => $value) {
 
-		if($value!="")
+		$value = trim($value);
+
+		if($value!=='' && $value!=0)
 		{
 			$category_data[$cat_index] = $value;
 			$cat_index++;
@@ -186,34 +219,74 @@ if (isset($_POST['place_order'])) {
 	$user_data_record = mysqli_fetch_assoc($user_data_existing);
 	$user_id = $user_data_record["u_id"];
 
-	if($user_data_record==0)
+	if(!isset($_SESSION['e_cat_id']))
 	{
+		if($count_record==0)
+		{
 
-		$order_info_query = "insert into user(name,contact_no,address,b_date)values('$name','$contact_no','$address','$date')";
-		$order_info = mysqli_query($con,$order_info_query);
-		$user_id= mysqli_insert_id($con);
+			$order_info_query = "insert into user(name,contact_no,address,b_date)values('$name','$contact_no','$address','$date')";
+			$order_info = mysqli_query($con,$order_info_query);
+			$user_id= mysqli_insert_id($con);
 
-		$user_id-1;
+			$user_id-1;
+		}
 
+			for ($i=0; $i<$total_purchase_product; $i++) 
+			{ 
+
+				$update_quntity_query = "select * from stock where cat_id=$category_data[$i] and sub_cat_name='$items[$i]'";
+				$update_quntity_data = mysqli_query($con,$update_quntity_query);
+				$quntity_update_row = mysqli_fetch_assoc($update_quntity_data);
+
+
+				$stock_id = $quntity_update_row['s_id'];
+				$total_stock = $quntity_update_row['quantity'] - $quntity[$i];
+
+				$update_stock = "update stock set quantity=$total_stock where s_id=$stock_id and edit_status=0 ";
+				mysqli_query($con,$update_stock);
+
+				$select_sub_cat_id = "select * from sub_category where cat_id=$category_data[$i] and sub_cat_name='$items[$i]'";
+				$select_sub_cat_data = mysqli_query($con,$select_sub_cat_id);
+				$sub_cat_data_row = mysqli_fetch_assoc($select_sub_cat_data);
+
+				$sub_cat_id = $sub_cat_data_row['sub_cat_id'];
+
+
+				$place_order = "insert into product_order(cat_id,sub_cat_name,quantity,price,user_id,bill_no,order_date,sub_cat_id)values('$category_data[$i]','$items[$i]','$quntity[$i]',$category_price[$i],'$user_id','$bill_no','$date',$sub_cat_id)"; 
+						mysqli_query($con,$place_order);
+			} 
+
+	}else{
+
+		for ($i=0; $i<$total_purchase_product; $i++) { 
+
+			$update_quntity_query = "select * from stock where cat_id=$category_data[$i] and sub_cat_name='$items[$i]' and edit_status=1";
+			$update_quntity_data = mysqli_query($con,$update_quntity_query);
+			$count_update = mysqli_num_rows($update_quntity_data);
+
+			if($count_update!=0)
+			{
+				$quntity_update_row = mysqli_fetch_assoc($update_quntity_data);
+				$stock_id = $quntity_update_row['s_id'];
+				$total_stock = $quntity_update_row['quantity'] - $quntity[$i];
+
+				$place_update_order = "update product_order set cat_id='$category_data[$i]',sub_cat_name='$items[$i]',quantity='$quntity[$i]' where o_id='$u_id_array[$i]'"; 
+				mysqli_query($con,$place_update_order);
+
+				$e_update_stock = "update stock set quantity=$total_stock , edit_status=0 where s_id=$stock_id";
+				mysqli_query($con,$e_update_stock);
+				
+			}
+		}
 	}
+
+	unset($_SESSION['e_cat_id']);
+	unset($_SESSION['e_sub_cat_name']);
+	unset($_SESSION['e_quntity']);
+	unset($_SESSION['u_id']);
+	unset($_SESSION['e_sub_cat_id']);
+	unset($_SESSION['user_data']);
 	
-
-	for ($i=0; $i<$total_purchase_product; $i++) { 
-
-
-		$update_quntity_query = "select * from stock where cat_id=$category_data[$i] and sub_cat_name='$items[$i]'";
-		$update_quntity_data = mysqli_query($con,$update_quntity_query);
-		$quntity_update_row = mysqli_fetch_assoc($update_quntity_data);
-
-		$stock_id = $quntity_update_row['s_id'];
-		$total_stock = $quntity_update_row['quantity'] - $quntity[$i];
-
-		$update_stock = "update stock set quantity=$total_stock where s_id=$stock_id";
-		mysqli_query($con,$update_stock);
-	
-		$place_order = "insert into product_order(cat_id,sub_cat_name,quantity,price,user_id,bill_no,order_date)values('$category_data[$i]','$items[$i]','$quntity[$i]',$category_price[$i],'$user_id','$bill_no','$date')";
-			mysqli_query($con,$place_order);
-	} 
 
 	header('location:view_order.php');
 }
@@ -244,17 +317,38 @@ if(isset($_GET['bill_no']))
 
 /* View Order */
 
-$selected_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id  GROUP BY product_order.bill_no ORDER BY product_order.print_status DESC ";
-$total_order = mysqli_query($con,$selected_order_query);
+if($actual_link=="https://localhost/crm_nursery/view_order.php" || $actual_link=="https://shreeharimanage.com/view_order.php")
+{
 
-$selected_com_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id where product_order.print_status=1 GROUP BY product_order.bill_no ";
-$total_order_old = mysqli_query($con,$selected_com_order_query);
+	$selected_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id  GROUP BY product_order.bill_no ORDER BY product_order.print_status DESC ";
+	$total_order = mysqli_query($con,$selected_order_query);
 
-$selected_pending_order = "SELECT product_order.* , user.*, category.cat_name FROM `product_order` JOIN user on user.u_id=product_order.user_id join category on product_order.cat_id=category.cat_id where product_order.order_status=0 GROUP BY product_order.bill_no";
-$pending_order = mysqli_query($con,$selected_pending_order);
+}
 
-$selected_completed_order = "SELECT product_order.* , user.*, category.cat_name FROM `product_order` JOIN user on user.u_id=product_order.user_id join category on product_order.cat_id=category.cat_id where product_order.order_status=1 GROUP BY product_order.bill_no";
-$completed_order = mysqli_query($con,$selected_completed_order);
+if($actual_link=="https://localhost/crm_nursery/view_old_record.php" || $actual_link=="https://shreeharimanage.com/view_old_record.php")
+{
+
+	$selected_com_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id where product_order.print_status=1 GROUP BY product_order.bill_no ";
+	$total_order_old = mysqli_query($con,$selected_com_order_query);
+
+}
+
+if($actual_link=="https://localhost/crm_nursery/show_order.php" || $actual_link=="https://shreeharimanage.com/show_order.php")
+{
+
+	$selected_pending_order = "SELECT product_order.* , user.*, category.cat_name FROM `product_order` JOIN user on user.u_id=product_order.user_id join category on product_order.cat_id=category.cat_id where product_order.order_status=0 GROUP BY product_order.bill_no";
+	$pending_order = mysqli_query($con,$selected_pending_order);
+
+}
+
+if($actual_link=="https://localhost/crm_nursery/view_deliver_record.php" || $actual_link=="https://shreeharimanage.com/view_deliver_record.php")
+{
+
+	$selected_completed_order = "SELECT product_order.* , user.*, category.cat_name FROM `product_order` JOIN user on user.u_id=product_order.user_id join category on product_order.cat_id=category.cat_id where product_order.order_status=1 GROUP BY product_order.bill_no";
+	$completed_order = mysqli_query($con,$selected_completed_order);
+
+}
+
 
 if(isset($_GET['order_bill']))
 {
@@ -271,7 +365,7 @@ if(isset($_GET['order_bill']))
 
 <?php 
 
- $actual_link = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"; 
+ 
 
 
  	if($actual_link=="https://localhost/crm_nursery/payment.php" || $actual_link=="https://shreeharimanage.com/payment.php")
@@ -432,56 +526,6 @@ if(isset($_GET['order_bill']))
 
 	}
 
+	/* edit stock */
 
-
-	/* Edit Order */
-
-
-	if(isset($_GET['edit_bill_no']))
-	{
-		$e_bill_no = $_GET['edit_bill_no'];
-		$edit_bill_query = "select * from product_order where bill_no=$e_bill_no";
-		$edit_bill_data = mysqli_query($con,$edit_bill_query);
-
-		$m_cat_id = "";
-		$sub_cat_name="";
-		$e_quntity="";
-
-		while($edit_bill_rows = mysqli_fetch_assoc($edit_bill_data))
-		{
-			if($m_cat_id=="")
-			{
-				$m_cat_id = $edit_bill_rows['cat_id'];
-			}
-			else
-			{
-				$m_cat_id = $m_cat_id.",".$edit_bill_rows['cat_id'];
-			}
-
-			if($sub_cat_name=="")
-			{
-				$sub_cat_name = $edit_bill_rows['sub_cat_name'];
-			}
-			else
-			{
-				$sub_cat_name = $sub_cat_name.",".$edit_bill_rows['sub_cat_name'];
-			}
-
-			if($e_quntity=="")
-			{
-				$e_quntity = $edit_bill_rows['quantity'];
-			}
-			else
-			{
-				$e_quntity = $e_quntity.",".$edit_bill_rows['quantity'];
-			}
-
-		}
-
-		$e_cat_id = explode(",",$m_cat_id);
-		$e_sub_cat_name = explode(",",$sub_cat_name);
-		$e_quntity = explode(",",$e_quntity);
-	}
-
-
-	/* End Edit */
+/* end edit stock */

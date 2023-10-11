@@ -54,7 +54,7 @@
                     <?php }else{ ?>
                 		<td><a href="print_order_slip.php?bill_no=<?php echo $order_data['bill_no']; ?>">Re-Print</a></td>
                   <?php } ?>
-                  <td><a href="dashboard.php?edit_bill_no=<?php echo $order_data['bill_no']; ?>">Edit Bill</a></td>
+                  <td><a href="edit_bill.php?edit_bill_no=<?php echo $order_data['bill_no']; ?>">Edit Bill</a></td>
                 	</tr>
                 <?php } ?>
                   </tbody>
