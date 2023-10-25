@@ -329,7 +329,6 @@ if(!isset($_SESSION["Login_id"]))
               </li>
             </ul>
           </li>
-
            <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -339,7 +338,20 @@ if(!isset($_SESSION["Login_id"]))
                 <span class="badge badge-info right"></span>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="add_expenses.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Expenses</p>
+                </a>
+              </li>
+               <li class="nav-item">
+                <a href="view_expenses.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Expenses</p>
+                </a>
+              </li>
               <li class="nav-item">
                 <a href="view_payment.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
