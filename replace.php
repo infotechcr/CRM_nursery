@@ -7,7 +7,8 @@ if (isset($_GET['bill_no'])) {
 	
 	$bill_no = $_GET['bill_no'];
 
-	$select_oder_category = "select product_order.cat_id , category.cat_name from "
+	$select_oder_category = "select product_order.cat_id , category.cat_name from product_order join category on category.cat_id = product_order.cat_id where product_order.bill_no=$bill_no group by product_order.cat_id";
+	$category_data = mysqli_query($con,$select_oder_category);
 }
 
  ?>
@@ -18,7 +19,7 @@ if (isset($_GET['bill_no'])) {
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Manage Stock </h1>
+            <h1>Manage Replace</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -43,10 +44,11 @@ if (isset($_GET['bill_no'])) {
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form id="stock_manage_form">
+              <form id="replace_manage_form">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                        	<input type="hidden" name="r_bill_no" id="bill_no" value="<?php echo $bill_no; ?>">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Select Category:</label>
                                     <select class="form-control" name="category_id" id="cat_id">
@@ -57,22 +59,24 @@ if (isset($_GET['bill_no'])) {
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Select Sub Category:</label>
-                                    <select class="form-control" name="sub_category" id="sub_cat_name">
-                                        <option value="0" selected>Select Sub Category:</option>
-                                        <option value="B1-K1">B1-K1</option>
-                                        <option value="B1-K2">B1-K2</option>
-                                        <option value="B1-K3">B1-K3</option>
-                                        <option value="B1-K4">B1-K4</option>   
+                                    <select class="form-control" name="sub_category_id" id="sub_cat_name">
+                                        <option value="0" selected disabled>Select Sub Category:</option>
                                     </select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Purchase Quantity:</label>
+                                    <input type="text" class="form-control" id="sub_purchase_qty" placeholder="purchase quantity" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Quantity:</label>
-                                    <input type="text" class="form-control" id="sub_cat_stock" placeholder="Enter category Stock" name="sub_cat_stock" disabled>
+                                    <input type="text" class="form-control" id="sub_cat_qty" placeholder="Enter category Stock" name="sub_cat_stock" onkeyup="get_qty()" disabled>
                             </div>
                         </div>
                     </div>
@@ -88,7 +92,6 @@ if (isset($_GET['bill_no'])) {
             <!-- /.card -->
           </div>
         </div>
-
          <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -100,30 +103,19 @@ if (isset($_GET['bill_no'])) {
                   <thead>
                   <tr>
                     <th>#</th>
-                    <th>Cat Name</th>
-                    <th>B1-K1</th>
-                    <th>B1-K2</th>
-                    <th>B1-K3</th>
-                    <th>B1-K4</th>
+                    <th>Category Name</th>
+                    <th>Sub Category Name</th>
+                    <th>quantity</th>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody id="display_cat_data">
-                  <?php while($cat_row = mysqli_fetch_assoc($category_data)){ ?>
-                    <tr>
-                      <td><?php echo $cat_row['sub_cat_id ']; ?></td>
-                      <td><?php echo $cat_row['sub_cat_name']; ?></td>
-                      <td><?php echo $cat_row['sub_cat_name']; ?></td>
-                      <td><a href="#">Edit</a></td>
-                      <td><a href="#">update</a></td>
-                    </tr>
-                  <?php } ?>
                   </tbody>
                 </table>
               </div>
               <!-- /.card-body -->
             </div>
           </div>
-          
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>
@@ -131,3 +123,83 @@ if (isset($_GET['bill_no'])) {
   </div>
 
 <?php include_once 'footer.php'; ?>
+
+<script type="text/javascript">
+    function get_qty() {
+        
+        var p_qty = document.getElementById('sub_purchase_qty').value;
+        var r_qty = document.getElementById('sub_cat_qty').value;
+
+        if(p_qty<r_qty)
+        {
+            document.getElementById('sub_cat_qty').value = p_qty;
+        }
+
+
+    }
+</script>
+
+
+<script>
+    $(document).ready(function(){
+        $('#replace_manage_form').submit(function(e){
+            e.preventDefault();
+
+            var replace_order_data = $('#replace_manage_form').serialize();
+
+                $.ajax({
+                type:"post",
+                url:"ajax_order_replace.php",
+                data:replace_order_data,
+
+                success:function(res){
+                    $('#display_cat_data').html(res);
+                }
+            })
+        })
+    });
+
+    $(document).ready(function(){
+        $('#cat_id').change(function(){
+
+            var cat_id = $('#cat_id').val();
+            var bill_no = $('#bill_no').val();
+
+
+                $.ajax({
+                type:"post",
+                url:"ajax_order_replace.php",
+                data:{"cat_id":cat_id,'bill_no':bill_no},
+
+                success:function(res){
+                    $('#sub_cat_name').html(res);
+                    
+                }
+            })
+        })
+    })
+
+     $(document).ready(function(){
+        $('#sub_cat_name').change(function(){
+
+            var cat_order_id = $(this).val();
+
+            $.ajax({
+                type:"post",
+                url:"ajax_order_replace.php",
+                data:{"cat_order_id":cat_order_id},
+
+                success:function(res){
+                    $('#sub_purchase_qty').val(res);
+                    
+                }
+            })
+        })
+    })
+
+     $(document).ready(function(){
+        $('#sub_cat_name').change(function(){
+                $('#sub_cat_qty').removeAttr("disabled");
+        })
+    })
+</script>

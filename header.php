@@ -83,6 +83,9 @@ if(!isset($_SESSION["Login_id"]))
         <a href="view_deliver_record.php" class="nav-link">View Deliver Order</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
+        <a href="view_replace_order.php" class="nav-link">view Replace Order</a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
         <a href="payment.php" class="nav-link">Payment</a>
       </li>
     <?php } ?>
@@ -92,6 +95,11 @@ if(!isset($_SESSION["Login_id"]))
        <li class="nav-item d-none d-sm-inline-block">
         <a href="show_order.php" class="nav-link">view order</a>
       </li>
+
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="view_replace_order.php" class="nav-link">view Replace Order</a>
+      </li>
+
 
     <?php } ?>
     </ul>
@@ -204,6 +212,32 @@ if(!isset($_SESSION["Login_id"]))
               </li>
             </ul>
           </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Inquiry
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="add_inquiry.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Inquiry</p>
+                </a>
+              </li>
+               <li class="nav-item">
+                <a href="view_payment_report.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Inquiry</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -228,6 +262,74 @@ if(!isset($_SESSION["Login_id"]))
               </li>
             </ul>
           </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Quotation 
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="quotation.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Generate Quotation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="view_quotation.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Quotation</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-copy"></i>
+                  <p>
+                    Advance Payment 
+                    <i class="fas fa-angle-left right"></i>
+                    <span class="badge badge-info right"></span>
+                  </p>
+                </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="quotation.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Add Payment</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="view_advance_payment.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>View Payment</p>
+                  </a>
+                </li>
+              </ul>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Replace Product
+                <i class="fas fa-angle-left right"></i>
+                <span class="badge badge-info right"></span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="add_replace.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Replace Product</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
            <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -252,42 +354,7 @@ if(!isset($_SESSION["Login_id"]))
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Quotation 
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right"></span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="quotation.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Generate Quotation</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-           <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-copy"></i>
-              <p>
-                Replace Product
-                <i class="fas fa-angle-left right"></i>
-                <span class="badge badge-info right"></span>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="add_replace.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Add Replace Product</p>
-                </a>
-              </li>
-            </ul>
-          </li>
+
         <?php } ?>
         </ul>
       </nav>

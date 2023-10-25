@@ -76,6 +76,7 @@
             <!-- /.card -->
           </div>
         </div>
+
          <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -110,6 +111,7 @@
               <!-- /.card-body -->
             </div>
           </div>
+          
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </section>

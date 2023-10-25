@@ -168,6 +168,9 @@ if (isset($_POST['place_order'])) {
 
 	$total_price = $_POST['total'];
 
+	$date_string = explode('-',$date);
+
+	$date = $date_string[2].'-'.$date_string[1].'-'.$date_string[0];
 
 	$category_data = array();
 	$category_price = array();
@@ -209,6 +212,11 @@ if (isset($_POST['place_order'])) {
 			$price_index++;
 		}
 	}
+
+	if(count($category_price)==0)
+	{
+		$category_price = $_SESSION['e_cat_price'];
+	}
 	
 
 	$total_purchase_product = count($items);
@@ -219,8 +227,13 @@ if (isset($_POST['place_order'])) {
 	$user_data_record = mysqli_fetch_assoc($user_data_existing);
 	$user_id = $user_data_record["u_id"];
 
-	if(!isset($_SESSION['e_cat_id']))
-	{
+	// print_r($category_data);
+	// print_r($items);
+	// print_r($quntity);
+	// print_r($category_price);
+
+	// die();
+
 		if($count_record==0)
 		{
 
@@ -242,7 +255,7 @@ if (isset($_POST['place_order'])) {
 				$stock_id = $quntity_update_row['s_id'];
 				$total_stock = $quntity_update_row['quantity'] - $quntity[$i];
 
-				$update_stock = "update stock set quantity=$total_stock where s_id=$stock_id and edit_status=0 ";
+				$update_stock = "update stock set quantity=$total_stock where s_id=$stock_id";
 				mysqli_query($con,$update_stock);
 
 				$select_sub_cat_id = "select * from sub_category where cat_id=$category_data[$i] and sub_cat_name='$items[$i]'";
@@ -250,35 +263,17 @@ if (isset($_POST['place_order'])) {
 				$sub_cat_data_row = mysqli_fetch_assoc($select_sub_cat_data);
 
 				$sub_cat_id = $sub_cat_data_row['sub_cat_id'];
+				$price = $sub_cat_data_row['sub_cat_price'];
+				$login_user_name = $_SESSION['Login_user_name'];
 
-
-				$place_order = "insert into product_order(cat_id,sub_cat_name,quantity,price,user_id,bill_no,order_date,sub_cat_id)values('$category_data[$i]','$items[$i]','$quntity[$i]',$category_price[$i],'$user_id','$bill_no','$date',$sub_cat_id)"; 
+				
+				$place_order = "insert into product_order(cat_id,sub_cat_name,quantity,price,user_id,bill_no,order_date,sub_cat_id,o_place_by)values('$category_data[$i]','$items[$i]','$quntity[$i]',$price,'$user_id','$bill_no','$date',$sub_cat_id,'$login_user_name')"; 
 						mysqli_query($con,$place_order);
-			} 
 
-	}else{
-
-		for ($i=0; $i<$total_purchase_product; $i++) { 
-
-			$update_quntity_query = "select * from stock where cat_id=$category_data[$i] and sub_cat_name='$items[$i]' and edit_status=1";
-			$update_quntity_data = mysqli_query($con,$update_quntity_query);
-			$count_update = mysqli_num_rows($update_quntity_data);
-
-			if($count_update!=0)
-			{
-				$quntity_update_row = mysqli_fetch_assoc($update_quntity_data);
-				$stock_id = $quntity_update_row['s_id'];
-				$total_stock = $quntity_update_row['quantity'] - $quntity[$i];
-
-				$place_update_order = "update product_order set cat_id='$category_data[$i]',sub_cat_name='$items[$i]',quantity='$quntity[$i]' where o_id='$u_id_array[$i]'"; 
-				mysqli_query($con,$place_update_order);
-
-				$e_update_stock = "update stock set quantity=$total_stock , edit_status=0 where s_id=$stock_id";
-				mysqli_query($con,$e_update_stock);
+				$update_stock = "update stock set edit_status=0 where s_id=$stock_id";
+				mysqli_query($con,$update_stock);
 				
 			}
-		}
-	}
 
 	unset($_SESSION['e_cat_id']);
 	unset($_SESSION['e_sub_cat_name']);
@@ -286,33 +281,10 @@ if (isset($_POST['place_order'])) {
 	unset($_SESSION['u_id']);
 	unset($_SESSION['e_sub_cat_id']);
 	unset($_SESSION['user_data']);
+	unset($_SESSION['e_cat_price']);
 	
 
 	header('location:view_order.php');
-}
-
-if(isset($_GET['bill_no']))
-{
-	$bill_no = $_GET['bill_no'];
-
-	$select_order = "select category.* , product_order.* , user.* FROM product_order join category on category.cat_id=product_order.cat_id join user on user.u_id=product_order.user_id where product_order.bill_no=$bill_no";
-
-	$order_data = mysqli_query($con,$select_order);
-	$order_data1 = mysqli_query($con,$select_order);
-
-	$order_data2 = mysqli_query($con,$select_order);
-	$order_user_id = mysqli_fetch_assoc($order_data2);
-	$user_id = $order_user_id["user_id"];
-
-	$previous_order_query = "select * from product_order where user_id=$user_id and bill_no<$bill_no";
-	$previous_order_data = mysqli_query($con,$previous_order_query);
-	$previous_total_price=0;
-
-	while($p_order_data = mysqli_fetch_assoc($previous_order_data)){
-		$previous_total_price += $p_order_data['price'] * $p_order_data['quantity'];
-	}
-
-
 }
 
 /* View Order */
@@ -320,7 +292,7 @@ if(isset($_GET['bill_no']))
 if($actual_link=="https://localhost/crm_nursery/view_order.php" || $actual_link=="https://shreeharimanage.com/view_order.php")
 {
 
-	$selected_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id  GROUP BY product_order.bill_no ORDER BY product_order.print_status DESC ";
+	$selected_order_query = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id GROUP BY product_order.bill_no ORDER BY product_order.bill_no DESC";
 	$total_order = mysqli_query($con,$selected_order_query);
 
 }
@@ -370,8 +342,9 @@ if(isset($_GET['order_bill']))
 
  	if($actual_link=="https://localhost/crm_nursery/payment.php" || $actual_link=="https://shreeharimanage.com/payment.php")
  	{
- 		$selected_payment_order = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id GROUP BY user.contact_no";
+ 		$selected_payment_order = "SELECT product_order.* , user.* FROM `product_order` JOIN user on user.u_id=product_order.user_id GROUP BY user.contact_no ORDER BY product_order.o_id DESC";
  		$payment_data = mysqli_query($con,$selected_payment_order);
+ 		// $payment_data_count = mysqli_num_rows($payment_data);
 
  	}
 
@@ -392,8 +365,9 @@ if(isset($_GET['order_bill']))
  		$t_date = $_POST['t_date'];
  		$payment_mode = $_POST['payment_mode'];
  		$ex_note = $_POST['note'];
+ 		$login_user_name = $_SESSION['Login_user_name'];
 
- 		$payment_query = "insert into paid_amount(p_u_id,amount,discount_amount,date,payment_mode,extra_note)values('$u_id','$amount','$discount','$t_date','$payment_mode','$ex_note')";
+ 		$payment_query = "insert into paid_amount(p_u_id,amount,discount_amount,date,payment_mode,extra_note,s_created_by)values('$u_id','$amount','$discount','$t_date','$payment_mode','$ex_note','$login_user_name')";
  		mysqli_query($con,$payment_query);
 
  		header('location:view_payment.php');
@@ -502,7 +476,7 @@ if(isset($_GET['order_bill']))
 
 		} 
 
-		header('location:view_order.php');
+		header('location:view_quotation.php');
 	}
 
 	if(isset($_GET['q_bill_no']))

@@ -18,13 +18,21 @@
 
 		$total_days = $later->diff($earlier)->format("%a");
 
-		if ($total_days<=60) {
-			header('location:replace.php?bill_no='.$bill_no);
-		}
-		else
-		{
-			echo "<script>alert('Your Order is out of $total_days!')</script>";
-		}
+    if(isset($_POST['any_resion']))
+    {
+        header('location:replace.php?bill_no='.$bill_no);
+    }
+    else
+    {
+
+  		if ($total_days<=60) {
+  			header('location:replace.php?bill_no='.$bill_no);
+  		}
+  		else
+  		{
+  			echo "<script>alert('Your Order is out of $total_days!')</script>";
+  		}
+    }
 	}
 
  ?>
@@ -61,11 +69,18 @@
               <!-- form start -->
               <form method="post">
                 <div class="card-body">
+
                   <div class="form-group">
                     <label for="exampleInputEmail1">Enter Bill No:</label>
                     <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter Bil No" name="bill_no">
                   </div>
+
+                   <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1" name="any_resion">
+                    <label class="form-check-label" for="exampleCheck1">Replace Product In Any Cases</label>
+                  </div>
                 </div>
+
                 <div class="card-footer">
                   <button type="submit" class="btn btn-primary" name="check_status">Submit</button>
                 </div>

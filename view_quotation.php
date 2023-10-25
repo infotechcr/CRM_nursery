@@ -1,4 +1,10 @@
-<?php include_once 'header.php'; include_once 'query.php'; ?>
+<?php include_once 'header.php'; include_once 'db.php'; ?>
+<?php 
+
+$selected_order_query = "SELECT quotation_order.* , quotation_user.* FROM `quotation_order` JOIN quotation_user on quotation_user.u_id=quotation_order.user_id  GROUP BY quotation_order.bill_no ";
+	$total_order = mysqli_query($con,$selected_order_query);
+
+ ?>
 
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -38,7 +44,7 @@
                       <th>Contact No</th>
                       <th>Print Bill</th>
                       <th>Edit Bill</th>
-                      <th>Order By</th>
+                      <th>Advance Pay</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -48,15 +54,15 @@
                 	<tr>
                 		<td><?php echo $order_data['bill_no']; ?></td>
                 		<td><?php echo $order_data['name']; ?></td>
-                		<td><?php echo $order_data['order_date']; ?></td>
+                		<td><?php echo $order_data['b_date']; ?></td>
                 		<td><?php echo $order_data['contact_no']; ?></td>
                     <?php if($order_data['print_status']==0) { ?>
-                		  <td><a href="print_order_slip.php?bill_no=<?php echo $order_data['bill_no']; ?>">Print Bill</a></td>
+                		  <td><a href="print_estimate.php?q_bill_no=<?php echo $order_data['bill_no']; ?>">Print Bill</a></td>
                     <?php }else{ ?>
-                		<td><a href="print_order_slip.php?bill_no=<?php echo $order_data['bill_no']; ?>">Re-Print</a></td>
+                		<td><a href="print_estimate.php?q_bill_no=<?php echo $order_data['bill_no']; ?>">Re-Print</a></td>
                   <?php } ?>
-                  <td><a href="edit_bill.php?edit_bill_no=<?php echo $order_data['bill_no']; ?>">Edit Bill</a></td>
-                  <td><?php echo $order_data['o_place_by']; ?></td>
+                  <td><a href="edit_quotation.php?quotation_bill_no=<?php echo $order_data['bill_no']; ?>">Edit Bill</a></td>
+                  <td><a href="Add_advance_payment.php?quotation_bill_no=<?php echo $order_data['bill_no']; ?>">Pay Advance</a></td>
                 	</tr>
                 <?php } ?>
                   </tbody>
@@ -73,4 +79,4 @@
     <!-- /.content -->
   </div>
 
- <?php include_once 'footer.php'; ?>
+<?php include_once 'footer.php'; ?>

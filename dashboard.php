@@ -42,9 +42,8 @@ if (isset($_SESSION['e_cat_id'])) {
 
   ?>
 
-  <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+  
     <?php if($_SESSION['role']==1) { ?>
     <div class="content-header">
       <div class="container-fluid">
@@ -60,9 +59,7 @@ if (isset($_SESSION['e_cat_id'])) {
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
-    <!-- /.content-header -->
-
-    <!-- Main content -->
+  
     <section class="content">
       <div class="container-fluid">
         <!-- Small boxes (Stat box) -->
@@ -260,7 +257,7 @@ if (isset($_SESSION['e_cat_id'])) {
 
                                       <?php if(isset($_SESSION['e_cat_id'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> <input type="hidden" name="bill_no_id[]" value="<?php echo $u_id[$q_index] ?>">  <?php } } ?>
 
-                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input" <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
+                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input product_select " <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
 
                                       <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
                                       <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
@@ -268,7 +265,7 @@ if (isset($_SESSION['e_cat_id'])) {
                                     </tr>
                                     <tr>
 
-                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)"></td>
+                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)" onkeyup="calculation(<?php echo $total_category; ?>)"></td>
                                     </tr>
                                   </table>
                                 </td>
@@ -300,12 +297,12 @@ if (isset($_SESSION['e_cat_id'])) {
           </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
-    </section>
+  </section>
 
     <?php } ?>
     <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
+
   <?php include_once 'footer.php'; ?>
   <script type="text/javascript">
 
@@ -352,6 +349,15 @@ if (isset($_SESSION['e_cat_id'])) {
 
           cat_1 = parseInt(document.getElementsByClassName('product_quantity')[i].value);
           price_1 = parseInt(document.getElementsByClassName('product_quantity')[i].getAttribute('product_price'));
+
+
+            var check_selected = document.getElementsByClassName('product_select')[i];
+            
+            if(check_selected.checked)
+            {
+              var price_2 = parseInt(document.getElementsByClassName('product_quantity')[i].getAttribute('product_price'));
+              document.getElementsByClassName('category_price')[i].value = price_2; 
+            }
 
           total = total + cat_1*price_1; 
 

@@ -1,6 +1,19 @@
 <?php 
 
-include_once 'header.php'; include_once 'query.php';
+include_once 'header.php'; include_once 'db.php';
+
+if(isset($_GET['order_bill']))
+{
+  $billno = $_GET['order_bill']; 
+  $update_order_status = "update replace_order set order_status=1 where bill_no=$billno";
+  mysqli_query($con,$update_order_status);
+  header("location:view_replace_order.php");
+}
+
+$selected_replace_order = "SELECT replace_order.* , user.*, category.cat_name FROM `replace_order` JOIN user on user.u_id=replace_order.user_id join category on replace_order.cat_id=category.cat_id where replace_order.order_status=0 GROUP BY replace_order.bill_no";
+  $replace_order = mysqli_query($con,$selected_replace_order);
+
+
 
 ?>
 
@@ -10,12 +23,12 @@ include_once 'header.php'; include_once 'query.php';
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Show Order</h1>
+            <h1>Replace order</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Show Order</li>
+              <li class="breadcrumb-item active">Replace Order</li>
             </ol>
           </div>
         </div>
@@ -24,12 +37,13 @@ include_once 'header.php'; include_once 'query.php';
 
     <!-- Main content -->
     <section class="content">
+
       <!-- Default box -->
       <div class="card card-solid">
         <div class="card-body pb-0">
           <div class="row">
-          <?php while($show_order = mysqli_fetch_assoc($pending_order)) { $user_id = $show_order['user_id']; ?>
-             <a href="order_details.php?u_bill_no=<?php echo $show_order["bill_no"]; ?>" style="padding-bottom:50px"> 
+          <?php while($show_order = mysqli_fetch_assoc($replace_order)) { $user_id = $show_order['user_id']; ?>
+             <a href="replace_order_details.php?u_bill_no=<?php echo $show_order["bill_no"]; ?>" style="padding-bottom:50px"> 
               <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
                 <div class="card bg-light d-flex flex-fill">
                   <div class="card-header text-muted border-bottom-0 bg-secondary">
@@ -48,7 +62,7 @@ include_once 'header.php'; include_once 'query.php';
                     </div>
                   </div>
                   <div class="card-footer order_btn_foot position-absolute" style="bottom: 0;left: 0; width: 100%;">
-                      <a href="show_order.php?order_bill=<?php echo $show_order['bill_no']; ?>" class="btn btn-sm btn-primary btn-block">
+                      <a href="view_replace_order.php?order_bill=<?php echo $show_order['bill_no']; ?>" class="btn btn-sm btn-primary btn-block">
                         <i class="fas fa-truck"></i> Delivery
                       </a>
                   </div>
@@ -59,7 +73,6 @@ include_once 'header.php'; include_once 'query.php';
           </div>
         </div>
         <!-- /.card-body -->
-        <!-- /.card-footer -->
       </div>
       <!-- /.card -->
 

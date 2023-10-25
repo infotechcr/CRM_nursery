@@ -14,6 +14,7 @@ if(isset($_GET['edit_bill_no']))
     $e_quntity="";
     $u_id="";
     $sub_cat_id="";
+    $e_cat_price="";
 
 
     $e_total_payment = 0 ; while($edit_bill_rows = mysqli_fetch_assoc($edit_bill_data))
@@ -91,6 +92,15 @@ if(isset($_GET['edit_bill_no']))
         $sub_cat_id = $sub_cat_id.",".$edit_bill_rows['sub_cat_id'];
       }
 
+       if($e_cat_price=="")
+      {
+        $e_cat_price = $edit_bill_rows['price'];
+      }
+      else
+      {
+        $e_cat_price = $e_cat_price.",".$edit_bill_rows['price'];
+      }
+
     }
 
     $e_cat_id = explode(",",$m_cat_id);
@@ -98,6 +108,7 @@ if(isset($_GET['edit_bill_no']))
     $e_quntity = explode(",",$e_quntity);
     $u_id = explode(",",$u_id);
     $e_sub_cat_id = explode(",",$sub_cat_id);
+    $e_cat_price = explode(",",$e_cat_price);
 
 
     $_SESSION['e_cat_id'] = $e_cat_id;
@@ -106,8 +117,12 @@ if(isset($_GET['edit_bill_no']))
     $_SESSION['u_id'] = $u_id;
     $_SESSION['e_sub_cat_id'] = $e_sub_cat_id;
     $_SESSION['user_data'] = $user_data;
-    
+    $_SESSION['e_cat_price'] = $e_cat_price;
 
+    $e_bill_no = $_GET['edit_bill_no'];
+    $delete_edit_bill_query = "delete from product_order where bill_no=$e_bill_no";
+    mysqli_query($con,$delete_edit_bill_query);
+    
 
     header('location:dashboard.php');
 

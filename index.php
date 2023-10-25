@@ -1,6 +1,10 @@
 <?php include_once 'db.php'; 
 
 
+if (isset($_SESSION['Login_id'])) {
+  header('location:dashboard.php');
+}
+
 
 if (isset($_POST['login'])) {
   

@@ -1,4 +1,33 @@
-<?php include_once 'query.php'; ?>
+<?php include_once 'db.php'; ?>
+
+<?php 
+
+if(isset($_GET['q_bill_no']))
+{
+	$bill_no = $_GET['q_bill_no'];
+
+	$select_order = "select category.* , quotation_order.* , quotation_user.* FROM quotation_order join category on category.cat_id=quotation_order.cat_id join quotation_user on quotation_user.u_id=quotation_order.user_id where quotation_order.bill_no=$bill_no";
+
+	$order_data = mysqli_query($con,$select_order);
+	$order_data1 = mysqli_query($con,$select_order);
+
+	$order_data2 = mysqli_query($con,$select_order);
+	$order_user_id = mysqli_fetch_assoc($order_data2);
+	$user_id = $order_user_id["user_id"];
+
+	$advance_payment_view_query = "SELECT advance_payment.* , quotation_user.*, quotation_order.* from advance_payment JOIN quotation_user ON advance_payment.q_bill_no_user_id=quotation_user.u_id JOIN quotation_order ON advance_payment.q_bill_no = quotation_order.bill_no where advance_payment.q_bill_no=$bill_no GROUP BY q_bill_no"; 
+	$advance_payement_data = mysqli_query($con,$advance_payment_view_query);
+	$advance_data_row = mysqli_fetch_assoc($advance_payement_data);
+	$advance_data_count = mysqli_num_rows($advance_payement_data);
+
+
+
+
+
+
+}
+
+ ?>
 
 <!DOCTYPE html>
 <html>
@@ -180,6 +209,15 @@
 
 </style>
 
+  <?php 
+
+    $billno = $_GET['q_bill_no'];
+
+    $update_print_status_query = "update product_order set print_status=1 where bill_no=$billno";
+    mysqli_query($con,$update_print_status_query);
+
+    ?>
+
 <!-- Main content -->
 <section class="content mb-4">
 	<div class="card page shadow-none m-2">
@@ -211,17 +249,19 @@
 
 			<table class="table table-bordered mb-1">
 
+					<?php $cnt=0;  while($customer_data = mysqli_fetch_assoc($order_data1)) { if($cnt==0) { ?>
 					<tr>
-						<td class="w-75"><b>M/s. : </b></td>
-						<td><b>Mob. No : </b></td>
+						<td class="w-75"><b>M/s. : </b><?php echo $customer_data['name']; ?></td>
+						<td class="text-break"><b>Mob. : </b>+91 <?php echo $customer_data['contact_no']; ?></td>
 					</tr>
 					<tr>
-						<td rowspan="2"><b>Add. : </b></td>
-						<td class="w-25"><b>No. : </b></td>
+						<td rowspan="2"><b>Add. : </b><?php echo $customer_data['address']; ?></td>
+						<td class="w-25"><b>Ch. No. : </b><?php echo $customer_data['bill_no']; ?></td>
 					</tr>
 					<tr>
-						<td><b>Date : </b></td>
+						<td><b>Date : </b><?php echo $customer_data['b_date']; ?></td>
 					</tr>
+					<?php $cnt++; } } ?>
 				</table>
 				<table class="table table-bordered mb-1" width="100%">
 					<tr>
@@ -231,169 +271,44 @@
 						<th class="text-center" width="150px">Rate</th>
 						<th class="text-center" width="150px">Amount</th>
 					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+				<tr>
+						<th class="text-center" width="50px">No</th>
+						<th>Particular</th>
+						<th class="text-center" width="80px">Qty</th>
+						<th class="text-center" width="150px">Rate</th>
+						<th class="text-center" width="150px">Amount</th>
 					</tr>
+						<?php $id=1; $total_price=0; $cnt=1; while($odrer_row = mysqli_fetch_assoc($order_data)) { $cat_id = $odrer_row['cat_id']; $sub_cat_name = $odrer_row['sub_cat_name']; ?>
+
 					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
+						<th class="text-center"><?php echo $id; ?></th>
+						<td><?php echo $odrer_row['cat_name']; ?> ( <?php echo $odrer_row['sub_cat_name']; ?> )</td>
+						<td class="text-center"><?php echo $odrer_row['quantity']; ?></td>
+
+						<td class="text-center"><?php echo $odrer_row['price']; ?></td>
+						<td class="text-center"><?php echo $odrer_row['price'] * $odrer_row['quantity']; $total_price += $odrer_row['price'] * $odrer_row['quantity']; ?></td>
 					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>	
-					<tr>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-						<td>&nbsp;</td>
-					</tr>			
+
+					<?php $id++; $cnt++;} ?>
+
+					<?php for($i=$cnt-1;$i<=20;$i++){ ?>
+						<tr>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+							<td>&nbsp;</td>
+						</tr>
+					<?php } ?>		
 					<tr>
 						<th colspan="3"></th>
 						<th class="text-center text-danger">Advance</th>
-						<th class="text-center" width="20%"></th>
+						<th class="text-center" width="20%"><?php if($advance_data_count>0) { echo @$advance_data_row['a_payment']; } else { echo "0"; } ?></th>
 					</tr>	
 					<tr>
 						<th colspan="3"></th>
 						<th class="text-center text-danger">Total</th>
-						<th class="text-center" width="20%"></th>
+						<th class="text-center" width="20%"><?php echo $total_price; ?></th>
 					</tr>		
 					<tr>
 						<th colspan="3"></th>
@@ -411,9 +326,10 @@
 						</th>
 					</tr>
 				</table>
-			</div>
+			</table>
 		</div>
-	</section>
+	</div>
+</section>
 
 	<script type="text/javascript">
 		window.onload=function(){

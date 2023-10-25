@@ -1,15 +1,11 @@
-<?php include_once 'header.php'; include_once 'query.php'; ?>
+<?php include_once 'header.php'; include_once 'db.php'; ?>
 
-    <?php 
+<?php 
 
-          if(isset($_GET['billid']))
-          {
-                $bid = $_GET['billid'];
-                $status_update = "update `paid_amount` set `status`='1' where `p_id`=".$bid;
-                mysqli_query($con,$status_update);
-                header("location:view_payment.php");
-          }
-     ?>
+	$advance_payment_view_query = "SELECT * from advance_payment JOIN quotation_user ON advance_payment.q_bill_no_user_id=quotation_user.u_id JOIN quotation_order ON advance_payment.q_bill_no = quotation_order.bill_no GROUP BY q_bill_no";
+	$advance_payement_data = mysqli_query($con,$advance_payment_view_query);
+
+ ?>
 
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -32,26 +28,25 @@
                       <th style="width: 10px">No</th>
                       <th>Name</th>
                       <th>Contact No</th>
-                      <th>Paid Amount | Discount Amount</th>
+                      <th>Paid Amount</th>
                       <th>Bill Date</th>
                       <th>Action</th>
                       <th>Delete</th>
-                      <th>Created By</th>
                     </tr>
                   </thead>
                   <tbody>
                
-                  	<?php $id=1; while($pay_data = mysqli_fetch_assoc($pay_amount_data)) { ?>
+                  	<?php $id=1; while($pay_data = mysqli_fetch_assoc($advance_payement_data)) { ?>
 
                   		<tr>
                   			<td><?php echo $id; ?></td>
                   			<td><?php echo $pay_data["name"]; ?></td>
                   			<td><?php echo $pay_data["contact_no"]; ?></td>
-                  			<td><?php echo $pay_data["amount"]; ?> <?php if($pay_data['discount_amount']!=0) { ?> || <?php echo $pay_data['discount_amount']; } ?></td>
-                  			<td><?php echo $pay_data["date"]; ?></td>
-                  			<td><a href="print_cash_receipt.php?p_id=<?php echo $pay_data['p_id'] ?>&u_id=<?php echo $pay_data['p_u_id']; ?>">Print slip</a></td>
-                          <td><a href="view_payment.php?billid=<?php echo $pay_data['p_id']?>">Delete</a></td>
-                          <td><?php echo $pay_data['s_created_by']; ?></td>
+                  			<td><?php echo $pay_data["a_payment"]; ?></td>
+                  			<td><?php echo $pay_data["b_date"]; ?></td>
+                  			<td><a href="print_cash_receipt.php?p_id=<?php echo $pay_data['q_bill_no']; ?>&u_id=<?php echo $pay_data['q_bill_no_user_id']; ?>">Print slip</a></td>
+
+                          <td><a href="view_payment.php?billid=<?php echo $pay_data['q_pay_id']; ?>">Delete</a></td>
                   		</tr>
 
                   	<?php $id++; } ?>
@@ -81,4 +76,4 @@
 </style>
 
 
-<?php  include_once 'footer.php';?>
+<?php include_once 'footer.php'; ?>

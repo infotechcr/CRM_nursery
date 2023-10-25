@@ -1,4 +1,4 @@
-<?php include_once 'query.php'; ?>
+<?php include_once 'db.php'; ?>
 
 <!DOCTYPE html>
 <html>
@@ -47,6 +47,7 @@
 		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 		
 	}
+	
 	.content::before{
 		content: '';
 		position: absolute;
@@ -178,6 +179,44 @@
 
     <?php 
 
+    $id=1;
+
+    	$bill_no = $_GET['bill_no'];
+
+	$select_order = "select category.* , product_order.* , user.* FROM product_order join category on category.cat_id=product_order.cat_id join user on user.u_id=product_order.user_id where product_order.bill_no=$bill_no";
+	$total_count_order = mysqli_query($con,$select_order);
+
+
+
+		$limit=14;
+		$total_order_count = mysqli_num_rows($total_count_order);
+		$total_print = ceil($total_order_count/$limit);
+
+		$total_bill_amount=0;
+
+		for ($p=1; $p<=$total_print ; $p++) { 
+
+
+			$start = ($p-1)*$limit;
+			
+			$select_order = "select category.* , product_order.* , user.* FROM product_order join category on category.cat_id=product_order.cat_id join user on user.u_id=product_order.user_id where product_order.bill_no=$bill_no limit $start,$limit";
+
+			$order_data = mysqli_query($con,$select_order);
+			$order_data1 = mysqli_query($con,$select_order);
+
+
+	$order_data2 = mysqli_query($con,$select_order);
+	$order_user_id = mysqli_fetch_assoc($order_data2);
+	$user_id = $order_user_id["user_id"];
+
+	$previous_order_query = "select * from product_order where user_id=$user_id and bill_no<$bill_no";
+	$previous_order_data = mysqli_query($con,$previous_order_query);
+	$previous_total_price=0;
+
+	while($p_order_data = mysqli_fetch_assoc($previous_order_data)){
+		$previous_total_price += $p_order_data['price'] * $p_order_data['quantity'];
+	}
+
     $billno = $_GET['bill_no'];
 
     $update_print_status_query = "update product_order set print_status=1 where bill_no=$billno";
@@ -229,7 +268,7 @@
 						<td class="w-25"><b>Ch. No. : </b><?php echo $customer_data['bill_no']; ?></td>
 					</tr>
 					<tr>
-						<td><b>Date : </b><?php echo $customer_data['b_date']; ?></td>
+						<td><b>Date : </b><?php echo $customer_data['order_date']; ?></td>
 					</tr>
 					<?php $cnt++; } } ?>
 				</table>
@@ -241,7 +280,7 @@
 						<th class="text-center" width="150px">Rate</th>
 						<th class="text-center" width="150px">Amount</th>
 					</tr>
-						<?php $id=1; $total_price=0; $cnt=1; while($odrer_row = mysqli_fetch_assoc($order_data)) { $cat_id = $odrer_row['cat_id']; $sub_cat_name = $odrer_row['sub_cat_name']; ?>
+						<?php  $total_price=0; $cnt=1; while($odrer_row = mysqli_fetch_assoc($order_data)) { $cat_id = $odrer_row['cat_id']; $sub_cat_name = $odrer_row['sub_cat_name']; ?>
 
 					<tr>
 						<th class="text-center"><?php echo $id; ?></th>
@@ -249,12 +288,13 @@
 						<td class="text-center"><?php echo $odrer_row['quantity']; ?></td>
 
 						<td class="text-center"><?php echo $odrer_row['price']; ?></td>
-						<td class="text-center"><?php echo $odrer_row['price'] * $odrer_row['quantity']; $total_price += $odrer_row['price'] * $odrer_row['quantity']; ?></td>
+						<td class="text-center"><?php echo $odrer_row['price'] * $odrer_row['quantity']; 
+						$total_price += $odrer_row['price'] * $odrer_row['quantity']; $total_bill_amount += $odrer_row['price'] * $odrer_row['quantity'];?> </td>
 					</tr>
 
-					<?php $id++; $cnt++;} ?>
+					<?php $id++; $cnt++; } ?>
 
-					<?php for($i=$cnt-1;$i<=14;$i++){ ?>
+					<?php for($i=$cnt-1;$i<=13;$i++){ ?>
 						<tr>
 							<td>&nbsp;</td>
 							<td>&nbsp;</td>
@@ -263,6 +303,7 @@
 							<td>&nbsp;</td>
 						</tr>
 					<?php } ?>	
+
 					<tr>
 						<th colspan="5">
 							<table class="table table-bordered mb-0">
@@ -274,7 +315,7 @@
 								<tr>
 										<th class="text-center" width="33.33%">₹ <?php echo $previous_total_price; ?></th>
 										<th class="text-center" width="33.33%">₹ <?php echo $total_price; ?></th>
-										<th class="text-center" width="33.33%">₹ <?php echo $previous_total_price+$total_price; ?></th>
+										<th class="text-center" width="33.33%">₹ <?php echo $total_bill_amount; ?></th>
 								</tr>
 							</table>
 						</th>
@@ -323,6 +364,7 @@
               </div>
           </div>
     </section>
+ <?php } ?>
  <script type="text/javascript">
    window.onload=function(){
     window.print();
