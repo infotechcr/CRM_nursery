@@ -27,6 +27,7 @@ if($_SESSION['role']==1 || $_SESSION['role']==2)
 	/* show category data */
 		$category_data_query = "select * from category";
 		$category_data = mysqli_query($con,$category_data_query);	
+		$category_data1 = mysqli_query($con,$category_data_query);	
 
 	/* show category data */
 		$today_date = date("Y-m-d");
@@ -47,7 +48,7 @@ if(isset($_POST['cat_name']))
 	mysqli_query($con,$query_insert);
 	$insert_category_id = mysqli_insert_id($con); 
 
-	$stock_data = array('B1-K1','B1-K2','B1-K3','B1-K4');
+	$stock_data = array('B1-K1','B1-K2','B1-K3','B1-K4','MR-2','MR-3','MR-4');
 
 	foreach ($stock_data as $key => $value) {
 
@@ -62,18 +63,58 @@ if(isset($_POST['cat_name']))
 	$cat_data = mysqli_query($con,$query_select);
 }
 
+//call ajax for insert extra category
+if(isset($_POST['category_extra']))
+{
+
+	$cat_id = $_POST['category_extra'];
+
+	$select_extra_record = "select * from extra_sub_category where cat_id=$cat_id";
+	$count_data = mysqli_query($con,$select_extra_record);
+	$e_cnt = mysqli_num_rows($count_data);
+
+	if($e_cnt==0)
+	{
+		$stock_data1 = array('B2-K1','B2-K2','B2-K3','B3-K1','B3-K2','B4-K1','B4-K2','B5-K1','B5-K2');
+
+		foreach ($stock_data1 as $key => $value) {
+
+			$stock_insert = "insert into extra_cat_stock(cat_id,sub_cat_name) VALUES ('$cat_id','$value')";
+			mysqli_query($con,$stock_insert);
+
+			$query_sub_cat_insert = "insert into extra_sub_category(cat_id,sub_cat_name,sub_cat_price)values('$cat_id','$value','sub_cat_price')";
+			mysqli_query($con,$query_sub_cat_insert);
+		}
+	}
+
+}
+
 // call ajax for insert sub category
+
 if(isset($_POST['sub_cat_price']))
 {
 	$cat_id = $_POST['cat_id'];
 	$sub_category = $_POST['sub_category'];
 	$sub_cat_price = $_POST['sub_cat_price'];
 
-	$update_data = "update sub_category set sub_cat_price=$sub_cat_price where cat_id=$cat_id and sub_cat_name='$sub_category'";
+	$update_data = "update sub_category set sub_cat_price=$sub_cat_price where cat_id=$cat_id and sub_cat_name='$sub_category'"; 
 	mysqli_query($con,$update_data);
 
 	$select_sub_cat = "select * from sub_category where cat_id='$cat_id'";
 	$sub_cat_data = mysqli_query($con,$select_sub_cat);
+}
+
+if(isset($_POST['sub_cat_extra_price']))
+{
+	$cat_id = $_POST['cat_id'];
+	$sub_category = $_POST['sub_category'];
+	$sub_cat_price = $_POST['sub_cat_extra_price'];
+
+	$update_data = "update extra_sub_category set sub_cat_price=$sub_cat_price where cat_id=$cat_id and sub_cat_name='$sub_category'"; 
+	mysqli_query($con,$update_data);
+
+	$select_sub_extra_cat = "select * from extra_sub_category where cat_id='$cat_id'";
+	$sub_cat_extra_data = mysqli_query($con,$select_sub_cat);
 }
 
 if(isset($_POST['cat_id']))
@@ -87,6 +128,7 @@ if(isset($_POST['cat_id']))
 
 $category_select = "select * from category";
 $sel_cat_data = mysqli_query($con,$category_select);
+$sel_cat_data1 = mysqli_query($con,$category_select);
 $total_category = mysqli_num_rows($sel_cat_data) * 4;
 
 /* select Stock */
@@ -103,7 +145,7 @@ if(isset($_POST['sub_cat_stock']))
 
 	if($cnt==0)
 	{
-		$stock_insert = "insert into stock(cat_id,sub_cat_name,quantity)values('$cat_id','$sub_cat_name','$sub_stock')";
+		$stock_insert = "insert into stock(cat_id,sub_cat_name,quantity)values('$cat_id','$sub_cat_name','$sub_stock')"; 
 		mysqli_query($con,$stock_insert);
 	}
 	else
@@ -121,14 +163,52 @@ if(isset($_POST['sub_cat_stock']))
 	$stock_data = mysqli_query($con,$stock_select);
 }
 
+if(isset($_POST['sub_cat_extra_stock']))
+{
+	$cat_id = $_POST['category_id'];
+	$sub_cat_name = $_POST['sub_category'];
+	$sub_stock = $_POST['sub_cat_extra_stock'];
+
+	$check_stock = "select * from extra_cat_stock where cat_id=$cat_id and sub_cat_name='$sub_cat_name'";
+	$stock_data_extra = mysqli_query($con,$check_stock);
+	$cnt = mysqli_num_rows($stock_data_extra);
+
+	if($cnt==0)
+	{
+		$stock_insert = "insert into extra_cat_stock(cat_id,sub_cat_name,quantity)values('$cat_id','$sub_cat_name','$sub_stock')"; 
+		mysqli_query($con,$stock_insert);
+	}
+	else
+	{
+		$row = mysqli_fetch_assoc($stock_data_extra);
+		$total_stock = $row['quantity'] + $sub_stock;
+		$id = $row['s_id'];
+
+		$update_stock = "update extra_cat_stock set quantity=$total_stock where s_id=$id";
+		mysqli_query($con,$update_stock);
+	}
+	
+
+	$stock_extra_select = "select category.cat_name , extra_cat_stock.* from extra_cat_stock join category on category.cat_id=extra_cat_stock.cat_id where extra_cat_stock.cat_id=$cat_id";
+	$extra_data = mysqli_query($con,$stock_extra_select);
+}
+
 /* select sub category */
 
 if(isset($_POST['select_sub']))
 {
 	$cat_id = $_POST['select_sub'];
 
-	$stock_select = "select category.cat_name , stock.* from stock join category on category.cat_id=stock.cat_id where stock.cat_id=$cat_id";
+	$stock_select = "select category.cat_name , stock.* from stock join category on category.cat_id=stock.cat_id where stock.cat_id=$cat_id"; 
 	$stock_data = mysqli_query($con,$stock_select);
+}
+
+if(isset($_POST['select_extra']))
+{
+	$cat_id = $_POST['select_extra'];
+
+	$stock_select = "select category.cat_name , extra_cat_stock.* from extra_cat_stock join category on category.cat_id=extra_cat_stock.cat_id where extra_cat_stock.cat_id=$cat_id";
+	$extra_data = mysqli_query($con,$stock_select);
 }
 
 /*Place Order*/
@@ -328,17 +408,7 @@ if(isset($_GET['order_bill']))
 	$update_order_status = "update product_order set order_status=1 where bill_no=$billno";
 	mysqli_query($con,$update_order_status);
 	header("location:show_order.php");
-}
-
-
- ?>
-
- <!-- Payment section -->
-
-<?php 
-
- 
-
+} 
 
  	if($actual_link=="https://localhost/crm_nursery/payment.php" || $actual_link=="https://shreeharimanage.com/payment.php")
  	{
@@ -387,13 +457,16 @@ if(isset($_GET['order_bill']))
  		$find_slip = "SELECT paid_amount.* , user.* FROM `paid_amount` JOIN user on user.u_id=paid_amount.p_u_id where paid_amount.p_id=$p_id";
  		$pay_slip_data = mysqli_query($con,$find_slip);
  	}
+
+ 	if(isset($_GET['e_id']))
+ 	{
+ 		$e_id = $_GET['e_id'];
+ 		$find_slip_expenses = "SELECT expenses.* , admin.* FROM expenses JOIN admin on admin.a_id=expenses.s_created_by where expenses.e_id=$e_id";
+ 		$pay_slip_expenses_data = mysqli_query($con,$find_slip_expenses);
+ 	}
  	
 
 ?>
-
-<!-- Place order end -->
-
-<!-- Quotation start  -->
 
 <?php 
 

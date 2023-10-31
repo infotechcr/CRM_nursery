@@ -34,6 +34,9 @@ include_once 'header.php'; include_once 'query.php';
                         <th scope="col">B-1 K-2</th>
                         <th scope="col">B-1 K-3</th>
                         <th scope="col">B-1 K-4</th>
+                        <th scope="col">MR-2</th>
+                        <th scope="col">MR-3</th>
+                        <th scope="col">MR-4</th>
 
                      </tr>
                   </thead>
@@ -81,7 +84,7 @@ include_once 'header.php'; include_once 'query.php';
                      </tr>
                     <?php $id++; } ?>
                     <tr>
-                      <td colspan="6">
+                      <td colspan="9">
                         <table width="100%" class="border-0">
                           <tr>
                             <td align="left">

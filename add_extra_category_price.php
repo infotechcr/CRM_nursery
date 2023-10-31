@@ -50,13 +50,15 @@
                                 <label for="exampleInputEmail1">Select Sub Category:</label>
                                     <select class="form-control" name="sub_category" id="sub_cat_name">
                                         <option value="0" selected>Select Sub Category:</option>
-                                        <option value="B1-K1">B1-K1</option>
-                                        <option value="B1-K2">B1-K2</option>
-                                        <option value="B1-K3">B1-K3</option>
-                                        <option value="B1-K4">B1-K4</option>
-                                        <option value="MR-2">MR-2</option>
-                                        <option value="MR-3">MR-3</option>
-                                        <option value="MR-4">MR-4</option>
+                                         <option value="B2-K1">B2-K1</option>
+                                        <option value="B2-K2">B2-K2</option>
+                                        <option value="B2-K3">B2-K3</option>
+                                        <option value="B3-K1">B3-K1</option>   
+                                        <option value="B3-K2">B3-K2</option>   
+                                        <option value="B4-K1">B4-K1</option>   
+                                        <option value="B4-K2">B4-K2</option>   
+                                        <option value="B5-K1">B5-K1</option>   
+                                        <option value="B5-K2">B5-K2</option>
 
                                     </select>
                             </div>

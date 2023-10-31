@@ -42,7 +42,7 @@
       <div class="container-fluid">
         <div class="row">
           <!-- left column -->
-          <div class="col-md-7">
+          <div class="col-md-6">
             <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
@@ -66,6 +66,36 @@
             </div>
             <!-- /.card -->
           </div>
+
+           <div class="col-md-6">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Extra Category</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+              <form id="e_cat_form">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="exampleInputEmail1">Select Category To Add:</label>
+                    <select class="form-control" name="category_extra" id="category_extra">
+                      <option selected disabled>Select Category:</option>
+                      <?php while($row_data = mysqli_fetch_assoc($category_data)) { ?>
+                        <option value="<?php echo $row_data['cat_id']; ?>"><?php echo $row_data['cat_name']; ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+                </div>
+                <!-- /.card-body -->
+               </form>
+                <div class="card-footer">
+                  <button class="btn btn-primary" id="add_extra_cat" value="Add">Add Extra Category</button>
+                </div>
+            
+            </div>
+            <!-- /.card -->
+          </div>
         </div>
          <div class="col-md-12 px-0">
             <div class="card">
@@ -84,7 +114,7 @@
                   </tr>
                   </thead>
                   <tbody id="display_cat_data">
-                  <?php while($cat_row = mysqli_fetch_assoc($category_data)){ ?>
+                  <?php while($cat_row = mysqli_fetch_assoc($category_data1)){ ?>
                     <tr>
                       <td><?php echo $cat_row['cat_id']; ?></td>
                       <td><?php echo $cat_row['cat_name']; ?></td>
@@ -123,6 +153,28 @@
 				}
 			})
 		})
+
+      $('#add_extra_cat').click(function(){
+      
+      var cat_data = $('#category_extra').val();
+
+      $.ajax({
+        type:"post",
+        url:"add_cat_ajax.php",
+        data:{"category_extra":cat_data},
+
+        success:function(res){
+          if(res==0)
+          {
+            alert("Extra Category Add Successfully");
+          }
+          else
+          {
+            alert("Extra Category Allready Added:");
+          }
+        }
+      })
+    })
 	})
 </script>
 

@@ -12,15 +12,15 @@ if(isset($_POST['cat_name']))
 	</tr>
 <?php } } if(isset($_POST['cat_id'])) { 
 
-	while($data_cat = mysqli_fetch_assoc($sub_cat_data))
+	$id=1; while($data_cat = mysqli_fetch_assoc($sub_cat_data))
 	{ ?>
 	<tr>
-	 	<td><?php echo $data_cat['sub_cat_id']; ?></td>
+	 	<td><?php echo $id; ?></td>
 		<td><?php echo $data_cat['sub_cat_name']; ?></td>
 		<td><?php echo $data_cat['sub_cat_price']; ?></td>
 	</tr>
 
-<?php } } ?>
+<?php $id++;} } ?>
 
 <?php if(isset($stock_data)) {  ?>
 
@@ -35,5 +35,19 @@ if(isset($_POST['cat_name']))
 		 <?php $count++; } ?>
 	</tr>
 
-<?php } ?>
+<?php }else if(isset($extra_data)){  ?>
+	
+		<tr>
+		<?php $count=1; while($stock_row = mysqli_fetch_assoc($extra_data)) { ?>
+
+			<?php if($count==1){ ?>
+		  		<td>1</td>
+		  		<td><?php echo $stock_row['cat_name']; ?></td>
+		  	<?php } ?>
+		  		<td><?php if($stock_row['quantity']!=0) { echo $stock_row['quantity']; } ?></td>
+		 <?php $count++; } ?>
+	</tr>
+<?php 
+	echo $e_cnt;
+} ?>
 

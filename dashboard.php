@@ -176,120 +176,247 @@ if (isset($_SESSION['e_cat_id'])) {
             <!-- /.card -->
           </div>
         </div>
-         <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Category Wise Data</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                  <table class="table table-bordered">
-                  <thead>
-                     <tr>
-                        <th scope="col">NO</th>
-                        <th scope="col">CATEGORY</th>
-                        <th scope="col">B-1 K-1</th>
-                        <th scope="col">B-1 K-2</th>
-                        <th scope="col">B-1 K-3</th>
-                        <th scope="col">B-1 K-4</th>
+        <style>
+          .tab_menu .nav-item .nav-link{
+            background-color: transparent;
+          }
+          .tab_menu .nav-item .nav-link.active{
+            border: none;
+            color: #007bff;
+            border-bottom:3px #007bff solid;
+          }
+          .tab_menu .nav-item:hover .nav-link{
+            border-width: 0 0 3px 0;
+            border-color: transparent transparent #007bff transparent;
+            color: #007bff;
+          }
+        </style>
+         <div class="col-md-12 pb-5">
+                  <div class="card p-3">
+            <ul class="nav nav-tabs tab_menu" id="myTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#category" type="button">Main Category</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#second" type="button">Second Category</button>
+              </li>             
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                  
+              <div class="tab-pane fade show active" id="category" role="tabpanel" >
+                  <div class="card-body">
+                      <table class="table table-bordered">
+                        <thead>
+                           <tr>
+                              <th scope="col">NO</th>
+                              <th scope="col">CATEGORY</th>
+                              <th scope="col">B-1 K-1</th>
+                              <th scope="col">B-1 K-2</th>
+                              <th scope="col">B-1 K-3</th>
+                              <th scope="col">B-1 K-4</th>
+                              <th scope="col">MR-2</th>
+                              <th scope="col">MR-3</th>
+                              <th scope="col">MR-4</th>
 
-                     </tr>
-                  </thead>
-                  <tbody class="text-left">
-                    <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($sel_cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
-                     <tr>
-                        <td><b><?php echo $id; ?></b></td>
-                        <td><b><?php echo $cate_rows['cat_name']; ?></b></td>
+                           </tr>
+                        </thead>
+                        <tbody class="text-left">
+                          <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($sel_cat_data)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
+                           <tr>
+                              <td><b><?php echo $id; ?></b></td>
+                              <td><b><?php echo $cate_rows['cat_name']; ?></b></td>
 
-                        <?php $sub_cat = "select * from sub_category where cat_id=$cate_id";
-                              $sub_cat_data = mysqli_query($con,$sub_cat);
-                              
-                              while($sub_cat_row = mysqli_fetch_assoc($sub_cat_data)) { $sub_cat_name = $sub_cat_row['sub_cat_name'];
+                              <?php $sub_cat = "select * from sub_category where cat_id=$cate_id";
+                                    $sub_cat_data = mysqli_query($con,$sub_cat);
+                                    
+                                    while($sub_cat_row = mysqli_fetch_assoc($sub_cat_data)) { $sub_cat_name = $sub_cat_row['sub_cat_name'];
 
-                                  $stock_query = "select * from stock where cat_id=$cate_id and sub_cat_name='$sub_cat_name'"; 
-                                  $stock_select = mysqli_query($con,$stock_query);
-                                  $stock_data = mysqli_fetch_assoc($stock_select);
+                                        $stock_query = "select * from stock where cat_id=$cate_id and sub_cat_name='$sub_cat_name'"; 
+                                        $stock_select = mysqli_query($con,$stock_query);
+                                        $stock_data = mysqli_fetch_assoc($stock_select);
 
-                                  if($stock_data['quantity']<=10)
-                                  {
-                                    $style = "background-color: #ffebe6";
-                                  }
-                                  else
-                                  {
-                                    $style = "";
-                                  }
+                                        if($stock_data['quantity']<=10)
+                                        {
+                                          $style = "background-color: #ffebe6";
+                                        }
+                                        else
+                                        {
+                                          $style = "";
+                                        }
 
-                                  if($sub_cat_row['sub_cat_price']==0 || $stock_data['quantity']==0)
-                                  {
-                                      $status = "disabled";
-                                  }else{
-                                    $status = "";
-                                  }
+                                        if($sub_cat_row['sub_cat_price']==0 || $stock_data['quantity']==0)
+                                        {
+                                            $status = "disabled";
+                                        }else{
+                                          $status = "";
+                                        }
 
-                               // print_r($sub_cat_row); 
-                               // print_r($e_cat_id);
-                               // print_r($e_sub_cat_id); die();
+                                     // print_r($sub_cat_row); 
+                                     // print_r($e_cat_id);
+                                     // print_r($e_sub_cat_id); die();
 
-                              ?>
+                                    ?>
 
-                                <td style="<?php echo @$style; ?> ">
-                                  <table width="100%">
-                                    <tr>
-                                      <input type="hidden" name="category[]" value="<?php 
-                                      if(isset($_SESSION['e_cat_id'])) 
-                                      { 
-                                          if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id)))
-                                          { 
-                                            echo $e_cat_id[$q_index]; 
-                                            
-                                          }
-                                          else 
-                                          { 
-                                            echo "0"; 
-                                          } 
-                                        } 
-                                        else 
-                                        { 
-                                            echo "0"; 
-                                          }  
-                                        ?> " class="category_name">
-                                      <input type="hidden" name="price[]" value="" class="category_price">
+                                      <td style="<?php echo @$style; ?> ">
+                                        <table width="100%">
+                                          <tr>
+                                            <input type="hidden" name="category[]" value="<?php 
+                                            if(isset($_SESSION['e_cat_id'])) 
+                                            { 
+                                                if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id)))
+                                                { 
+                                                  echo $e_cat_id[$q_index]; 
+                                                  
+                                                }
+                                                else 
+                                                { 
+                                                  echo "0"; 
+                                                } 
+                                              } 
+                                              else 
+                                              { 
+                                                  echo "0"; 
+                                                }  
+                                              ?> " class="category_name">
+                                            <input type="hidden" name="price[]" value="" class="category_price">
 
-                                      <?php if(isset($_SESSION['e_cat_id'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> <input type="hidden" name="bill_no_id[]" value="<?php echo $u_id[$q_index] ?>">  <?php } } ?>
+                                            <?php if(isset($_SESSION['e_cat_id'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> <input type="hidden" name="bill_no_id[]" value="<?php echo $u_id[$q_index] ?>">  <?php } } ?>
 
-                                      <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input product_select " <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
+                                            <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input product_select " <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
 
-                                      <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
-                                      <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
+                                            <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
+                                            <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
 
-                                    </tr>
-                                    <tr>
+                                          </tr>
+                                          <tr>
 
-                                      <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)" onkeyup="calculation(<?php echo $total_category; ?>)"></td>
-                                    </tr>
-                                  </table>
-                                </td>
+                                            <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)" onkeyup="calculation(<?php echo $total_category; ?>)"></td>
+                                          </tr>
+                                        </table>
+                                      </td>
 
-                              <?php $index++; } ?>
-                     </tr>
-                    <?php $id++; } ?>
-                    <tr>
-                      <td colspan="6">
-                        <table width="100%" class="border-0">
+                                    <?php $index++; } ?>
+                           </tr>
+                          <?php $id++; } ?>
                           <tr>
-                            <td align="left">
-                              <input type="text" class="form-control" name="total" value="<?php echo @$e_total_payment; ?>" id="total" readonly placeholder="Total Amount" required>
-                            </td>
-                            <td align="right">
-                              <input type="submit" class="btn btn-primary form-control" name="place_order" id="submit_btn" value="Place Order" <?php if(!isset($_SESSION['e_cat_id'])) { ?> disabled <?php } ?> >
+                            <td colspan="9">
+                              <table width="100%" class="border-0">
+                                <tr>
+                                  <td align="left">
+                                    <input type="text" class="form-control" name="total" value="<?php echo @$e_total_payment; ?>" id="total" readonly placeholder="Total Amount" required>
+                                  </td>
+                                  <td align="right">
+                                    <input type="submit" class="btn btn-primary form-control" name="place_order" id="submit_btn" value="Place Order" <?php if(!isset($_SESSION['e_cat_id'])) { ?> disabled <?php } ?> >
+                                  </td>
+                                </tr>
+                              </table>
                             </td>
                           </tr>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-               </table>
-            </div>
+                        </tbody>
+                     </table>
+                  </div>
+              </div>
+
+              <div class="tab-pane fade" id="second" role="tabpanel">  
+                  <div class="card-body">
+                          <table class="table table-bordered">
+                            <thead>
+                               <tr>
+                                  <th scope="col">NO</th>
+                                  <th scope="col">CATEGORY</th>
+                                  <th scope="col">B-2 K-1</th>
+                                  <th scope="col">B-2 K-2</th>
+                                  <th scope="col">B-2 K-3</th>
+                                  <th scope="col">B-3 K-1</th>
+                                  <th scope="col">B-3 K-2</th>
+                                  <th scope="col">B-4 K-1</th>
+                                  <th scope="col">B-4 K-2</th>
+                                  <th scope="col">B-5 K-1</th>
+                                  <th scope="col">B-5 K-2</th>
+
+                               </tr>
+                            </thead>
+                            <tbody class="text-left">
+                              <?php $id=1; $index=0; $q_index=0; while($cate_rows = mysqli_fetch_assoc($sel_cat_data1)){ $cate_id = $cate_rows['cat_id']; $category_name = $cate_rows['cat_name']; ?>
+                               <tr>
+                                  <td><b><?php echo $id; ?></b></td>
+                                  <td><b><?php echo $cate_rows['cat_name']; ?></b></td>
+
+                                  <?php $sub_cat = "select * from extra_sub_category where cat_id=$cate_id";
+                                        $sub_cat_data = mysqli_query($con,$sub_cat);
+                                        
+                                        while($sub_cat_row = mysqli_fetch_assoc($sub_cat_data)) { $sub_cat_name = $sub_cat_row['sub_cat_name'];
+
+                                            $stock_query = "select * from extra_cat_stock where cat_id=$cate_id and sub_cat_name='$sub_cat_name'"; 
+                                            $stock_select = mysqli_query($con,$stock_query);
+                                            $stock_data = mysqli_fetch_assoc($stock_select);
+
+                                            if($stock_data['quantity']<=10)
+                                            {
+                                              $style = "background-color: #ffebe6";
+                                            }
+                                            else
+                                            {
+                                              $style = "";
+                                            }
+
+                                            if($sub_cat_row['sub_cat_price']==0 || $stock_data['quantity']==0)
+                                            {
+                                                $status = "disabled";
+                                            }else{
+                                              $status = "";
+                                            }
+
+                                        ?>
+
+                                          <td style="<?php echo @$style; ?> ">
+                                            <table width="100%">
+                                              <tr>
+                                                <input type="hidden" name="category[]" value="<?php 
+                                                if(isset($_SESSION['e_cat_id'])) 
+                                                { 
+                                                    if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id)))
+                                                    { 
+                                                      echo $e_cat_id[$q_index]; 
+                                                      
+                                                    }
+                                                    else 
+                                                    { 
+                                                      echo "0"; 
+                                                    } 
+                                                  } 
+                                                  else 
+                                                  { 
+                                                      echo "0"; 
+                                                    }  
+                                                  ?> " class="category_name">
+                                                <input type="hidden" name="price[]" value="" class="category_price">
+
+                                                <?php if(isset($_SESSION['e_cat_id'])) { if(in_array($sub_cat_row['sub_cat_name'],$e_sub_cat_name) && in_array($cate_id,$e_cat_id)) { ?> <input type="hidden" name="bill_no_id[]" value="<?php echo $u_id[$q_index] ?>">  <?php } } ?>
+
+                                                <td width="20" align="center"><input type="checkbox"  <?php echo @$status; ?>  onchange="change_data(<?php echo $index; ?> , <?php echo $cate_id; ?>)" name="items[]" value="<?php echo $sub_cat_row['sub_cat_name']; ?>" class="form-check-input product_select " <?php if(isset($_SESSION['e_cat_id'])) { if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?> checked  <?php } }  ?>></td>
+
+                                                <td width="60" align="center">₹ <?php echo $sub_cat_row['sub_cat_price']; ?></td>
+                                                <td width="50" align="center"><?php echo $stock_data['quantity']; ?> Q</td>
+
+                                              </tr>
+                                              <tr>
+
+                                                <td colspan="3"><input type="number" name="quntity[]" class="form-control product_check product_quantity" min="0" value="<?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { echo $e_quntity[$q_index]; $q_index++; }else{ echo "0"; } } else { echo "0"; } ?>" product_price="<?php echo $sub_cat_row['sub_cat_price']; ?>" max="<?php echo $stock_data['quantity']; ?>" <?php if(isset($_SESSION['e_cat_id'])) {  if((in_array($sub_cat_row['sub_cat_id'],$e_sub_cat_id) && in_array($sub_cat_row['cat_id'],$e_cat_id))) { ?>   <?php }else{ echo "disabled"; } } else { echo "disabled"; } ?>  onchange="calculation(<?php echo $total_category; ?>)" onkeyup="calculation(<?php echo $total_category; ?>)"></td>
+                                              </tr>
+                                            </table>
+                                          </td>
+
+                                        <?php $index++; } ?>
+                               </tr>
+                              <?php $id++; } ?>
+                            </tbody>
+                         </table>
+                      </div> 
+                  </div>
+              </div>
+                  </div>
+            
           </form>
               </div>
               <!-- /.card-body -->

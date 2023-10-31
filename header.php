@@ -210,6 +210,12 @@ if(!isset($_SESSION["Login_id"]))
                   <p>Add Price</p>
                 </a>
               </li>
+               <li class="nav-item">
+                <a href="add_extra_category_price.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Extra Price</p>
+                </a>
+              </li>
             </ul>
           </li>
 
@@ -252,6 +258,12 @@ if(!isset($_SESSION["Login_id"]))
                 <a href="add_stock.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Add Stock</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="add_extra_stock.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Extra Stock</p>
                 </a>
               </li>
               <li class="nav-item">

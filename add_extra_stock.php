@@ -1,4 +1,4 @@
-<?php  include_once 'header.php'; include_once 'query.php'; ?>
+<?php  include_once 'header.php'; include_once 'query.php';?>
 
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -50,20 +50,22 @@
                                 <label for="exampleInputEmail1">Select Sub Category:</label>
                                     <select class="form-control" name="sub_category" id="sub_cat_name">
                                         <option value="0" selected>Select Sub Category:</option>
-                                        <option value="B1-K1">B1-K1</option>
-                                        <option value="B1-K2">B1-K2</option>
-                                        <option value="B1-K3">B1-K3</option>
-                                        <option value="B1-K4">B1-K4</option>   
-                                        <option value="MR-2">MR-2</option>   
-                                        <option value="MR-3">MR-3</option>   
-                                        <option value="MR-4">MR-4</option>   
+                                        <option value="B2-K1">B2-K1</option>
+                                        <option value="B2-K2">B2-K2</option>
+                                        <option value="B2-K3">B2-K3</option>
+                                        <option value="B3-K1">B3-K1</option>   
+                                        <option value="B3-K2">B3-K2</option>   
+                                        <option value="B4-K1">B4-K1</option>   
+                                        <option value="B4-K2">B4-K2</option>   
+                                        <option value="B5-K1">B5-K1</option>   
+                                        <option value="B5-K2">B5-K2</option>
                                     </select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Quantity:</label>
-                                    <input type="text" class="form-control" id="sub_cat_stock" placeholder="Enter category Stock" name="sub_cat_stock" disabled>
+                                    <input type="text" class="form-control" id="sub_cat_stock" placeholder="Enter category Stock" name="sub_cat_extra_stock" disabled>
                             </div>
                         </div>
                     </div>
@@ -92,25 +94,19 @@
                   <tr>
                     <th>#</th>
                     <th>Cat Name</th>
-                    <th>B1-K1</th>
-                    <th>B1-K2</th>
-                    <th>B1-K3</th>
-                    <th>B1-K4</th>
-                    <th>MR-2</th>
-                    <th>MR-3</th>
-                    <th>MR-4</th>
+                      <th scope="col">B2 K1</th>
+                      <th scope="col">B2 K2</th>
+                      <th scope="col">B2 K3</th>
+                      <th scope="col">B3 K1</th>
+                      <th scope="col">B3 K2</th>
+                      <th scope="col">B4 K1</th>
+                      <th scope="col">B4 K2</th>
+                      <th scope="col">B5 K1</th>
+                      <th scope="col">B5 K2</th>
                   </tr>
                   </thead>
                   <tbody id="display_cat_data">
-                  <?php while($cat_row = mysqli_fetch_assoc($category_data)){ ?>
-                    <tr>
-                      <td><?php echo $cat_row['sub_cat_id ']; ?></td>
-                      <td><?php echo $cat_row['sub_cat_name']; ?></td>
-                      <td><?php echo $cat_row['sub_cat_name']; ?></td>
-                      <td><a href="#">Edit</a></td>
-                      <td><a href="#">update</a></td>
-                    </tr>
-                  <?php } ?>
+                
                   </tbody>
                 </table>
               </div>
@@ -154,7 +150,7 @@
                 $.ajax({
                 type:"post",
                 url:"add_cat_ajax.php",
-                data:{"select_sub":cat_id},
+                data:{"select_extra":cat_id},
 
                 success:function(res){
                     $('#display_cat_data').html(res);
